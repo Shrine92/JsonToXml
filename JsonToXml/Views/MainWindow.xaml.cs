@@ -21,13 +21,13 @@ namespace JsonToXml
     /// </summary>
     public partial class MainWindow : Window
     {
-        protected MainViewModel MainViewModel
-        {
-            get { return (MainViewModel)Resources["ViewModel"]; }
-        }
+        public MainViewModel MainViewModel;
 
         public MainWindow()
         {
+            MainViewModel = new MainViewModel();
+
+            DataContext = MainViewModel;
             InitializeComponent();
         }
 

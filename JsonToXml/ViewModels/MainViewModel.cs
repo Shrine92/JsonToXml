@@ -11,13 +11,26 @@ namespace JsonToXml.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        public List<string> JsonPaths { get; set; }
+        private List<string> jsonPaths;
 
-        public ConversationModel conversation;
+        public List<string> JsonPaths
+        {
+            get { return jsonPaths; }
+            set { jsonPaths = value; }
+        }
+
+        private ConversationModel conversation;
+
+        public ConversationModel Conversation
+        {
+            get { return conversation; }
+            set { conversation = value; }
+        }
 
         public bool ReadFiles()
         {
             conversation = new ConversationModel();
+            conversation.messages = new List<MessageModel>();
 
             foreach (string path in JsonPaths)
             {
