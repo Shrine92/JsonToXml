@@ -9,7 +9,7 @@ namespace JsonToXml.Models
     public class MessageModel
     {
         public string sender_name { get; set; }
-        public object timestamp_ms { get; set; }
+        public string timestamp_ms { get; set; }
         public string content { get; set; }
         public string type { get; set; }
         public ShareModel share { get; set; }

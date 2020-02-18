@@ -69,6 +69,7 @@
     <Compile Include="Models\AudioFileModel.cs" />
     <Compile Include="Models\ConversationModel.cs" />
     <Compile Include="Models\MessageModel.cs" />
+    <Compile Include="Models\MessageXmlModel.cs" />
     <Compile Include="Models\ParticipantModel.cs" />
     <Compile Include="Models\PhotoModel.cs" />
     <Compile Include="Models\ShareModel.cs" />

@@ -56,7 +56,11 @@ namespace JsonToXml
                 string filename = dlg.FileName;
                 TB_Path.Text = filename;
 
-                this.MainViewModel.ReadFiles();
+                if (this.MainViewModel.ReadFiles())
+                {
+
+                }
+                
             }
         }
     }
