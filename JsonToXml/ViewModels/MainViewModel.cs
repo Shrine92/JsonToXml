@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace JsonToXml.ViewModels
 {
@@ -29,6 +30,8 @@ namespace JsonToXml.ViewModels
             set { conversation = value; }
         }
 
+        private List<MessageXmlModel> xmlMessages;
+
         public bool ReadFiles()
         {
             conversation = new ConversationModel();
@@ -42,17 +45,17 @@ namespace JsonToXml.ViewModels
                     {
                         string json = r.ReadToEnd();
 
-                        string parsedString = Regex.Unescape(json);
+                        string parsedString = Regex.Unescape(json.Replace("\\\"", ""));
 
                         byte[] isoBites = Encoding.GetEncoding("ISO-8859-1").GetBytes(parsedString);
 
-                        ConversationModel tmpConvers = JsonConvert.DeserializeObject<ConversationModel>(Encoding.UTF8.GetString(isoBites, 0, isoBites.Length));
+                        json = Encoding.UTF8.GetString(isoBites, 0, isoBites.Length);
+
+                        ConversationModel tmpConvers = JsonConvert.DeserializeObject<ConversationModel>(json);
 
                         conversation.participants = tmpConvers.participants;
                         conversation.title = tmpConvers.title;
                         conversation.messages.AddRange(tmpConvers.messages);
-
-                        Debug.WriteLine(tmpConvers.title);
                     }
                 }
                 catch (Exception ex)
@@ -65,6 +68,39 @@ namespace JsonToXml.ViewModels
             }
 
             return true;
+        }
+
+        public void ConvertToXmlFiles()
+        {
+            xmlMessages = new List<MessageXmlModel>();
+
+            foreach (MessageModel mess in conversation.messages)
+            {
+                xmlMessages.Add(new MessageXmlModel
+                {
+                    Message = mess.content,
+                    Name = mess.sender_name,
+                    Date = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc).AddMilliseconds(mess.timestamp_ms),
+                    Type = mess.type
+                });
+            }
+
+            this.WriteToXml();
+
+        }
+
+        private void WriteToXml()
+        {
+            if (xmlMessages != null && xmlMessages.Count > 0)
+            {
+                XmlSerializer writer = new XmlSerializer(typeof(List<MessageXmlModel>));
+
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "//SerializationOverview.xml";
+                FileStream file = File.Create(path);
+
+                writer.Serialize(file, xmlMessages);
+                file.Close();
+            }
         }
 
     }

@@ -58,7 +58,7 @@ namespace JsonToXml
 
                 if (this.MainViewModel.ReadFiles())
                 {
-
+                    this.MainViewModel.ConvertToXmlFiles();
                 }
                 
             }

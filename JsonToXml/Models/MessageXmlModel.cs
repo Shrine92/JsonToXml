@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JsonToXml.Models
 {
-    class MessageXmlModel
+    public class MessageXmlModel
     {
         public string Message { get; set; }
 
