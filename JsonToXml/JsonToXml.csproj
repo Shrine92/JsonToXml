@@ -68,11 +68,17 @@
     </Compile>
     <Compile Include="Models\AudioFileModel.cs" />
     <Compile Include="Models\ConversationModel.cs" />
+    <Compile Include="Models\FileModel.cs" />
+    <Compile Include="Models\GifModel.cs" />
     <Compile Include="Models\MessageModel.cs" />
     <Compile Include="Models\MessageXmlModel.cs" />
     <Compile Include="Models\ParticipantModel.cs" />
     <Compile Include="Models\PhotoModel.cs" />
+    <Compile Include="Models\ReactionModel.cs" />
     <Compile Include="Models\ShareModel.cs" />
+    <Compile Include="Models\StickerModel.cs" />
+    <Compile Include="Models\ThumbnailModel.cs" />
+    <Compile Include="Models\VideoModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
