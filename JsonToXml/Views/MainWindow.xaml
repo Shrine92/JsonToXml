@@ -8,11 +8,18 @@
         Title="MainWindow" Height="Auto" Width="Auto">
 
     <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBox x:Name="TB_Path"  HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="150"></TextBox>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
             <Button Margin="12" Content="Upload files" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Click="Button_Click"/>
+            <ListView Name="LV_Logs" Height="496">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Message" Width="401"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </StackPanel>
         
+
 
     </Grid>
 </Window>

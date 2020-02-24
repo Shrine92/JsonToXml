@@ -14,21 +14,11 @@ namespace JsonToXml.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        private List<string> jsonPaths;
+        public List<string> JsonPaths { get; set; }
 
-        public List<string> JsonPaths
-        {
-            get { return jsonPaths; }
-            set { jsonPaths = value; }
-        }
+        public ConversationModel Conversation { get; set; }
 
-        private ConversationModel conversation;
-
-        public ConversationModel Conversation
-        {
-            get { return conversation; }
-            set { conversation = value; }
-        }
+        public List<string> Logs { get; set; }
 
         private List<MessageXmlModel> xmlMessages;
 
@@ -42,8 +32,10 @@ namespace JsonToXml.ViewModels
 
         public bool ReadFiles()
         {
-            conversation = new ConversationModel();
-            conversation.messages = new List<MessageModel>();
+            Logs.Add("Read file operation begins.");
+
+            Conversation = new ConversationModel();
+            Conversation.messages = new List<MessageModel>();
 
             foreach (string path in JsonPaths)
             {
@@ -51,6 +43,7 @@ namespace JsonToXml.ViewModels
                 {
                     using (StreamReader r = new StreamReader(path))
                     {
+                        Logs.Add("File " + path.Split('\\').Last() + "has begin to be read");
                         string json = r.ReadToEnd();
 
                         string parsedString = Regex.Unescape(json.Replace("\\\"", "").Replace("\\\\", ""));
@@ -61,14 +54,16 @@ namespace JsonToXml.ViewModels
 
                         ConversationModel tmpConvers = JsonConvert.DeserializeObject<ConversationModel>(json);
 
-                        conversation.participants = tmpConvers.participants;
-                        conversation.title = tmpConvers.title;
-                        conversation.messages.AddRange(tmpConvers.messages);
+                        Conversation.participants = tmpConvers.participants;
+                        Conversation.title = tmpConvers.title;
+                        Conversation.messages.AddRange(tmpConvers.messages);
+
+                        Logs.Add("File " + path.Split('/').Last() + "has finished to be read");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Logs.Add("Error:" + ex.Message);
 
                     return false;
                 }
@@ -84,7 +79,7 @@ namespace JsonToXml.ViewModels
             xmlWords = new List<MessageXmlModel>();
             xmlEmotes = new List<MessageXmlModel>();
 
-            foreach (MessageModel mess in conversation.messages)
+            foreach (MessageModel mess in Conversation.messages)
             {
                 MessageXmlModel xmlMess = new MessageXmlModel
                 {
@@ -93,6 +88,8 @@ namespace JsonToXml.ViewModels
                     Date = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc).AddMilliseconds(mess.timestamp_ms),
                     Type = mess.type
                 };
+
+                // Logs.Add("Processing started for message at the date: " + xmlMess.Date);
 
                 if (xmlMess.Message == null)
                 {
@@ -185,7 +182,9 @@ namespace JsonToXml.ViewModels
                     this.CreateEmoteFile(mess);
                     this.CreateWordFile(mess);
                 }
-                
+
+                // Logs.Add("Processing finished for message at the date: " + xmlMess.Date);
+
             }
 
             this.WriteToXml();
@@ -229,37 +228,69 @@ namespace JsonToXml.ViewModels
 
         private void WriteToXml()
         {
+            Logs.Add("Writing to xml files begon");
+
             if (xmlMessages != null && xmlMessages.Count > 0)
             {
-                XmlSerializer writer = new XmlSerializer(typeof(List<MessageXmlModel>));
+                try
+                {
+                    Logs.Add("Writing messages to xml started");
+                    XmlSerializer writer = new XmlSerializer(typeof(List<MessageXmlModel>));
 
-                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "//MessageFile.xml";
-                FileStream file = File.Create(path);
+                    var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "//MessageFile.xml";
+                    FileStream file = File.Create(path);
 
-                writer.Serialize(file, xmlMessages);
-                file.Close();
+                    writer.Serialize(file, xmlMessages);
+                    file.Close();
+                    Logs.Add("Writing messages to xml ended");
+                }
+                catch (Exception ex)
+                {
+                    Logs.Add("Error while writing to xml for messages: \n" + ex.Message);
+                }
+                
             }
 
             if (xmlEmotes != null && xmlEmotes.Count > 0)
             {
-                XmlSerializer writer = new XmlSerializer(typeof(List<MessageXmlModel>));
+                try
+                {
+                    Logs.Add("Writing emotes to xml started");
+                    XmlSerializer writer = new XmlSerializer(typeof(List<MessageXmlModel>));
 
-                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "//EmoteFile.xml";
-                FileStream file = File.Create(path);
+                    var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "//EmoteFile.xml";
+                    FileStream file = File.Create(path);
 
-                writer.Serialize(file, xmlEmotes);
-                file.Close();
+                    writer.Serialize(file, xmlEmotes);
+                    file.Close();
+                    Logs.Add("Writing emotes to xml ended");
+                }
+                catch (Exception ex)
+                {
+                    Logs.Add("Error while writing to xml for emotes: \n" + ex.Message);
+                }
+                
             }
 
             if (xmlWords != null && xmlWords.Count > 0)
             {
-                XmlSerializer writer = new XmlSerializer(typeof(List<MessageXmlModel>));
+                try
+                {
+                    Logs.Add("Writing words to xml started");
+                    XmlSerializer writer = new XmlSerializer(typeof(List<MessageXmlModel>));
 
-                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "//WordFile.xml";
-                FileStream file = File.Create(path);
+                    var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "//WordFile.xml";
+                    FileStream file = File.Create(path);
 
-                writer.Serialize(file, xmlWords);
-                file.Close();
+                    writer.Serialize(file, xmlWords);
+                    file.Close();
+                    Logs.Add("Writing words to xml ended");
+                }
+                catch (Exception ex)
+                {
+                    Logs.Add("Error while writing to xml for words: \n" + ex.Message);
+                }
+               
             }
         }
 

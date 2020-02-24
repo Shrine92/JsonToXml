@@ -28,11 +28,13 @@ namespace JsonToXml
             MainViewModel = new MainViewModel();
 
             DataContext = MainViewModel;
+            MainViewModel.Logs = new List<string>();
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            LV_Logs.ItemsSource = MainViewModel.Logs;
             // Create OpenFileDialog 
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
@@ -54,9 +56,8 @@ namespace JsonToXml
                 // Open document 
                 this.MainViewModel.JsonPaths = dlg.FileNames.ToList();
                 string filename = dlg.FileName;
-                TB_Path.Text = filename;
 
-                if (this.MainViewModel.ReadFiles())
+                if (await Task.Run(() => this.MainViewModel.ReadFiles()))
                 {
                     this.MainViewModel.ConvertToXmlFiles();
                 }
